@@ -14,10 +14,49 @@ end
 desc 'list files'
 task :_list do
   Find.find(SRC_DIR) {|path|
-    next unless /\.tif$/.match path ###
-    next if /m\.tif$/.match path ###
+    next unless SRC_INCLUDES.match path
     print "#{path}\n"
   }
+end
+
+desc 'downsample 500m GeoTiff file'
+task :_downsample do
+  1.upto(6) {|i|
+    d = 2 ** i
+    gsd = 500 * d
+    sh <<-EOS
+gdalwarp -ts #{W500 / d} #{H500 / d} \
+-r mode -overwrite #{SRC500} #{SRC_DIR}/ver2103_LC_GeoTiff_#{gsd}m.tif
+    EOS
+  }
+end
+
+# _stream + _mbtiles <=> _each + _unite
+
+desc 'produce per file, replacing _stream + _mbtiles'
+task :_each do
+  sh <<-EOS
+rake _list | \
+ruby skipper.rb | \
+shuf | \
+parallel -j #{N_JOBSLOTS} \
+'\
+gdal_polygonize.py {} -f GeoJSONSeq \
+-q /vsistdout #{LAYER} #{PROPERTY} | \
+HRLULC={} ruby filter.rb | \
+tippecanoe --force -o {}.mbtiles \
+--no-tile-size-limit --no-feature-limit \
+--minimum-zoom=#{MINZOOM} --maximum-zoom=#{MAXZOOM} \
+'
+  EOS
+end
+
+desc 'produce a sigle mbtiles from _each'
+task :_unite do
+  sh <<-EOS
+tile-join --force -o #{MBTILES_PATH} \
+#{`rake _list | ruby gatekeeper.rb | tr '\n' ' '`.gsub('.tif', '.tif.mbtiles')}
+  EOS
 end
 
 desc 'stream features'

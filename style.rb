@@ -2,8 +2,9 @@ require 'yaml'
 require 'json'
 require './constants'
 
-metadata = JSON.parse(File.open('docs/zxy/metadata.json').read)
-center = metadata['center'].split(',').map {|v| v.to_f}
+#metadata = JSON.parse(File.open('docs/zxy/metadata.json').read)
+#center = metadata['center'].split(',').map {|v| v.to_f}
+center = [135.0, 35.0, 8]
 
 gsi_style = JSON.parse($stdin.read)
 
@@ -55,5 +56,5 @@ gsi_style['layers'].each {|layer|
   style['layers'].insert(-1, layer)
 }
 
-print JSON.pretty_generate(style)
+print JSON.generate(style)
 

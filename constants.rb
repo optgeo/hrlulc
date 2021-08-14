@@ -2,7 +2,7 @@ require 'yaml'
 
 # directories and paths
 SRC_DIR = 'src'
-MBTILES_PATH = '10m.mbtiles'
+MBTILES_PATH = 'tiles.mbtiles'
 TILES_DIR = 'docs/zxy'
 
 # sources
@@ -15,11 +15,21 @@ DOWNLOAD_URLS = %w{
 }
 DOWNLOAD_USER = 'YOUR_USERNAME'
 DOWNLOAD_PASSWORD = 'YOUR_PASSWORD'
+SRC_INCLUDES = /_(50m)\.tif$/
+#SRC_INCLUDES = /_(50m|100m|250m|500m|1000m|2000m|4000m|8000m|16000m|32000m)\.tif$/
+#SRC_INCLUDES = /_(N\d\dE\d\d\d|50m|100m|250m|500m|1000m|2000m|4000m|8000m|16000m|32000m)\.tif$/
+SRC500 = "#{SRC_DIR}/ver2103_LC_GeoTiff_500m.tif"
+W500 = 7680 # width of 500m.tif
+H500 = 6240 # height of 500m tif
+
+# vector tile production settings
+CONTINUE = true
+N_JOBSLOTS = 4
 
 # vector tile design configurations
 LAYER = 'hrlulc'
 PROPERTY = 'a'
-MINZOOM = 6
+MINZOOM = 0
 MAXZOOM = 13 ###
 ZOOM_CONFIG = YAML.load <<-EOS
 10m: 
@@ -27,16 +37,34 @@ ZOOM_CONFIG = YAML.load <<-EOS
   minzoom: 14
 50m:
   maxzoom: 13
-  minzoom: 11
+  m#inzoom: 12
 100m:
+  maxzoom: 11
+  minzoom: 11
+250m:
   maxzoom: 10
   minzoom: 10
-250m:
-  maxzoom: 9
-  minzoom: 9
 500m:
+  maxzoom: 9 
+  minzoom: 9
+1000m:
   maxzoom: 8
-  minzoom: 6
+  minzoom: 7
+2000m:
+  maxzoom: 6
+  minzoom: 5
+4000m:
+  maxzoom: 4
+  minzoom: 4
+8000m:
+  maxzoom: 3
+  minzoom: 3
+16000m:
+  maxzoom: 2
+  minzoom: 2
+32000m:
+  maxzoom: 1
+  minzoom: 0
 EOS
 
 # vector tile style configurations
