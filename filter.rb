@@ -3,7 +3,7 @@ require './constants'
 
 path = ENV['HRLULC']
 t = File.basename(path, '.tif').split('_')[-1]
-t = '10m' if t[0] == 'N'
+t = '10m' if t.size == 1
 
 tippecanoe = {
   :layer => LAYER,

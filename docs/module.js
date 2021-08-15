@@ -38,7 +38,11 @@ const showMap = async (texts) => {
   let voice = null
   for(let v of speechSynthesis.getVoices()) {
     console.log(v.name)
-    if (v.name == 'Daniel') voice = v
+    if ([
+      'Daniel',
+      'Google UK English Male',
+      'Microsoft Libby Online (Natural) - English (United Kingdom)'
+    ].includes(v.name)) voice = v
   }
 
   const legend = {

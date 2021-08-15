@@ -15,9 +15,8 @@ DOWNLOAD_URLS = %w{
 }
 DOWNLOAD_USER = 'YOUR_USERNAME'
 DOWNLOAD_PASSWORD = 'YOUR_PASSWORD'
-SRC_INCLUDES = /_(50m)\.tif$/
-#SRC_INCLUDES = /_(50m|100m|250m|500m|1000m|2000m|4000m|8000m|16000m|32000m)\.tif$/
-#SRC_INCLUDES = /_(N\d\dE\d\d\d|50m|100m|250m|500m|1000m|2000m|4000m|8000m|16000m|32000m)\.tif$/
+SRC_INCLUDES = /_(N\d\dE\d\d\d_\d_\d|50m|100m|250m|500m|1000m|2000m|4000m|8000m|16000m|32000m)\.tif$/
+#SRC_INCLUDES = /_(N\d\dE\d\d\d_\d_\d)\.tif$/
 SRC500 = "#{SRC_DIR}/ver2103_LC_GeoTiff_500m.tif"
 W500 = 7680 # width of 500m.tif
 H500 = 6240 # height of 500m tif
@@ -30,14 +29,14 @@ N_JOBSLOTS = 4
 LAYER = 'hrlulc'
 PROPERTY = 'a'
 MINZOOM = 0
-MAXZOOM = 13 ###
+MAXZOOM = 14
 ZOOM_CONFIG = YAML.load <<-EOS
 10m: 
   maxzoom: 14
   minzoom: 14
 50m:
   maxzoom: 13
-  m#inzoom: 12
+  minzoom: 12
 100m:
   maxzoom: 11
   minzoom: 11

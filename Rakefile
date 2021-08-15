@@ -31,6 +31,16 @@ gdalwarp -ts #{W500 / d} #{H500 / d} \
   }
 end
 
+desc 'retile 10m GSD files into smaller files'
+task :_retile do
+  Find.find("#{SRC_DIR}/ver2103_LC_GeoTiff") {|path|
+    next unless /\.tif$/.match path
+    sh <<-EOS
+gdal_retile.py -ps 2783 2783 -targetDir #{SRC_DIR}/ver2103_LC_GeoTiff_10m #{path}
+    EOS
+  }
+end
+
 # _stream + _mbtiles <=> _each + _unite
 
 desc 'produce per file, replacing _stream + _mbtiles'
@@ -54,7 +64,8 @@ end
 desc 'produce a sigle mbtiles from _each'
 task :_unite do
   sh <<-EOS
-tile-join --force -o #{MBTILES_PATH} \
+tile-join --force -o #{MBTILES_PATH} --no-tile-size-limit \
+--minimum-zoom=#{MINZOOM} --maximum-zoom=#{MAXZOOM} \
 #{`rake _list | ruby gatekeeper.rb | tr '\n' ' '`.gsub('.tif', '.tif.mbtiles')}
   EOS
 end
